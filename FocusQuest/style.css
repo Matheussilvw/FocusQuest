@@ -1,0 +1,354 @@
+:root {
+  --bg-dark: #09090b;
+  --panel-bg: #18181b;
+  --border: #27272a;
+  --primary: #8b5cf6;
+  --primary-glow: rgba(139, 92, 246, 0.5);
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --boss-hp: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Outfit", sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+/* --- Layout Grid --- */
+.grid-container {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  gap: 20px;
+  width: 100%;
+  max-width: 1400px;
+}
+
+@media (max-width: 1100px) {
+  .grid-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sidebar-right {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* --- Cards --- */
+.card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  border-color: #3f3f46;
+}
+
+/* --- Boss Battle Arena --- */
+.boss-arena {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80");
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--primary);
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+}
+
+.boss-avatar {
+  font-size: 8rem;
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.6));
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.1s;
+  cursor: pointer;
+}
+
+.boss-avatar.hit {
+  animation: shake 0.3s;
+  color: #fff;
+  filter: brightness(10);
+}
+.boss-avatar.dead {
+  animation: die 1s forwards;
+  filter: grayscale(1);
+}
+
+.boss-health-container {
+  width: 80%;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}
+
+.hp-bar-bg {
+  width: 100%;
+  height: 20px;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.hp-bar-fill {
+  height: 100%;
+  background: var(--danger);
+  width: 100%;
+  transition: width 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+.damage-text {
+  position: absolute;
+  font-weight: 900;
+  color: #fff;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: floatUp 1s forwards;
+  text-shadow: 0 0 5px red;
+}
+
+/* --- Stats & Chart --- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.stat-box {
+  background: #27272a;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+.stat-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  text-transform: uppercase;
+}
+
+/* Chart CSS Puro */
+.chart-container {
+  display: flex;
+  align-items: flex-end;
+  height: 100px;
+  gap: 8px;
+  margin-top: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+.chart-bar {
+  flex: 1;
+  background: var(--primary);
+  opacity: 0.5;
+  border-radius: 4px 4px 0 0;
+  transition: height 1s, opacity 0.2s;
+  position: relative;
+}
+.chart-bar:hover {
+  opacity: 1;
+}
+.chart-bar:hover::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+}
+
+/* --- Tasks & Controls --- */
+.task-item {
+  background: rgba(39, 39, 42, 0.6);
+  border-left: 4px solid var(--primary);
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+.task-item:hover {
+  transform: translateX(5px);
+  background: rgba(39, 39, 42, 0.9);
+}
+.task-item.priority-hard {
+  border-color: var(--danger);
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+.btn:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid #52525b;
+}
+
+/* --- Audio Player (White Noise) --- */
+.sound-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+.sound-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  background: #27272a;
+  border: none;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.sound-btn.active {
+  background: var(--success);
+  color: black;
+  font-weight: bold;
+}
+
+/* --- Animations --- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+@keyframes die {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.5);
+  }
+}
+
+/* Modal Level Up */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+}
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: #18181b;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  border: 2px solid var(--primary);
+  transform: scale(0.8);
+  transition: 0.3s;
+  max-width: 400px;
+}
+.overlay.active .modal {
+  transform: scale(1);
+}
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  z-index: 100;
+}

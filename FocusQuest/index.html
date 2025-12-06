@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusQuest 3.0 | Boss Slayer Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grid-container">
+    
+    <aside>
+        <div class="card" style="text-align: center;">
+            <div style="width:80px; height:80px; background: var(--primary); border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:2rem; box-shadow: 0 0 20px var(--primary-glow);">
+                <i class="fa-solid fa-user-ninja"></i>
+            </div>
+            <h2 id="rank-display">Novato</h2>
+            <div style="background: #27272a; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden;">
+                <div id="xp-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #ec4899); transition: width 0.5s;"></div>
+            </div>
+            <p style="font-size: 0.9rem; color: #a1a1aa;">Nível <span id="level-num">1</span> (<span id="xp-num">0</span> XP)</p>
+        </div>
+
+        <div class="card">
+            <h3><i class="fa-solid fa-chart-simple" style="color: var(--warning)"></i> Produtividade (7 dias)</h3>
+            <div class="chart-container" id="weekly-chart">
+                </div>
+            <div style="text-align: center; font-size: 0.8rem; color: #52525b; margin-top: 5px;">Tarefas Completadas</div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fa-solid fa-headphones" style="color: var(--success)"></i> Focus Radio</h3>
+            <p style="font-size: 0.8rem; color: #a1a1aa;">Sons para concentração</p>
+            <div class="sound-controls">
+                <button class="sound-btn" onclick="toggleNoise('rain', this)"><i class="fa-solid fa-cloud-rain"></i> Chuva</button>
+                <button class="sound-btn" onclick="toggleNoise('cafe', this)"><i class="fa-solid fa-mug-hot"></i> Café</button>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <div class="card boss-arena" id="arena">
+            <h2 style="color: white; text-shadow: 0 2px 4px black; margin-bottom: 20px;">BOSS ATUAL: <span id="boss-name" style="color: var(--danger)">PROCRASTINATHOS</span></h2>
+            
+            <div class="boss-avatar" id="boss-icon" onclick="hitBossEffect()">
+                <i class="fa-brands fa-d-and-d"></i>
+            </div>
+
+            <div class="boss-health-container">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:bold;">
+                    <span>HP do Boss</span>
+                    <span id="boss-hp-text">1000/1000</span>
+                </div>
+                <div class="hp-bar-bg">
+                    <div class="hp-bar-fill" id="boss-hp-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="task-input" placeholder="Nova missão (Ex: Terminar Slide 3)" style="flex:1; padding: 12px; background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px; outline:none;">
+                <select id="diff-select" style="padding: 12px; background: #27272a; border: 1px solid #3f3f46; color: white; border-radius: 8px;">
+                    <option value="easy">Fácil (50 DMG)</option>
+                    <option value="medium" selected>Médio (100 DMG)</option>
+                    <option value="hard">Difícil (200 DMG)</option>
+                </select>
+                <button class="btn" onclick="addTask()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <ul id="task-list" style="list-style: none;">
+                </ul>
+        </div>
+    </main>
+
+    <aside class="sidebar-right">
+        <div class="card">
+            <h3>Estatísticas de Batalha</h3>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-val" id="stat-killed">0</div>
+                    <div class="stat-label">Bosses Derrotados</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" id="stat-tasks">0</div>
+                    <div class="stat-label">Missões Cumpridas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" style="color: var(--warning)" id="stat-streak">0</div>
+                    <div class="stat-label">Dias Seguidos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" style="color: var(--primary)" id="stat-dmg">0</div>
+                    <div class="stat-label">Dano Total</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Log de Combate</h3>
+            <ul id="combat-log" style="list-style: none; font-size: 0.8rem; color: #a1a1aa; max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                </ul>
+        </div>
+    </aside>
+
+</div>
+
+<div class="overlay" id="modal">
+    <div class="modal">
+        <i class="fa-solid fa-trophy" style="font-size: 4rem; color: var(--warning); margin-bottom: 20px;"></i>
+        <h1 style="margin-bottom: 10px;">BOSS DERROTADO!</h1>
+        <p>Você ganhou <span style="color: var(--primary); font-weight: bold;">+500 XP Bônus</span></p>
+        <button class="btn" style="margin-top: 20px;" onclick="closeModal()">Próximo Boss</button>
+    </div>
+</div>
+</body>
+<script src="script.js"></script>
+</html>
